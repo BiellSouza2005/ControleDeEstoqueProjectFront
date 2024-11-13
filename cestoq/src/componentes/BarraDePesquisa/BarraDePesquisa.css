@@ -1,0 +1,8 @@
+.BarraDePesquisa {
+    background-color: #FFF;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.06);
+    border: none;
+    font-size: 24px;
+    padding: 18px;
+    box-sizing: border-box;
+}
