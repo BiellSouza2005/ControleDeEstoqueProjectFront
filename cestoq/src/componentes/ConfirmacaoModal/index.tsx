@@ -11,7 +11,7 @@ const ConfirmacaoModal: React.FC<ConfirmacaoModalProps> = ({ mensagem, onConfirm
     return (
         <div className="modal-overlay">
             <div className="modal-container">
-                <p>{mensagem}</p>
+                <p className="mensagem">{mensagem}</p>
                 <div className="modal-actions">
                     <button onClick={onConfirmar} className="confirmar-btn">Confirmar</button>
                     <button onClick={onCancelar} className="cancelar-btn">Cancelar</button>

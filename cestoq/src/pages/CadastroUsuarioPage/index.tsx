@@ -8,11 +8,18 @@ const CadastroUsuarioPage: React.FC = () => {
 
     const handleCadastroUsuario = async (usuario: { Name: string; Email: string; Password: string }) => {
         try {
-            const response = await axios.post('http://localhost:5124/api/User/AdicionarUsuario', usuario, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const username = "system";
+
+            const response = await axios.post('http://localhost:5124/api/User/AdicionarUsuario', 
+                usuario, 
+                    {
+                        headers: 
+                        {
+                            'Content-Type': 'application/json',
+                            'User-Inclusion': username
+                        },
+                    }
+            );
 
             if (response.status === 200 || response.status === 201) {
                 alert('Usuário cadastrado com sucesso!');

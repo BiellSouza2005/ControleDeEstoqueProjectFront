@@ -29,7 +29,7 @@ const FormularioMarca = ({identificadorForm, aMarcaCadastrada}: FormularioMarcaP
                 <CampoTexto 
                     identificador='idMarca'
                     obrigatorio={true}
-                    label="Marca"
+                    label=""
                     placeholder="Digite uma marca" 
                     valor={marca}
                     aoAlterado={valor => setMarca(valor)}

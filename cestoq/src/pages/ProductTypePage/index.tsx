@@ -5,7 +5,7 @@ import BarraDePesquisa from '../../componentes/BarraDePesquisa';
 import Botao from '../../componentes/Botao';
 import ConfirmacaoModal from '../../componentes/ConfirmacaoModal';
 import axios from 'axios'; // Importando axios
-import './CadastroMarcaPage.css';
+import './ProductTypePage.css';
 
 interface Marca {
     brandId: number;
@@ -22,9 +22,9 @@ const CadastroMarcaPage: React.FC = () => {
     const [novoNome, setNovoNome] = useState<string>(''); // Estado para armazenar o novo nome da marca
 
     // Função para carregar as marcas do backend
-    const carregarMarcas = async () => {
+    const carregarProductTypes = async () => {
         try {
-            const response = await axios.get('http://localhost:5124/api/Brands/VerTodasAsMarcas');
+            const response = await axios.get('http://localhost:5124/api/ProductTypes/VerTodosOsTiposDeProduto');
             setMarcas(response.data);
         } catch (error) {
             console.error('Erro ao carregar marcas:', error);
@@ -32,18 +32,18 @@ const CadastroMarcaPage: React.FC = () => {
     };
 
     useEffect(() => {
-        carregarMarcas();
+        carregarProductTypes();
     }, []);
 
     // Função para cadastro da marca
     const handleMarcaCadastrada = (marca: ICadastro) => {
-        setMensagemModal("Você deseja adicionar esta marca?");
+        setMensagemModal("Você deseja adicionar este tipo de produto?");
         setAcaoConfirmacao(() => async () => {
             try {
                 const username = sessionStorage.getItem('username'); // Obtendo o username do sessionStorage
     
                 const response = await axios.post(
-                    'http://localhost:5124/api/Brands/AdicionaMarca',
+                    'http://localhost:5124/api/ProductTypes/AdicionarTipoDeProduto',
                     { name: marca.marca },
                     {
                         headers: {
@@ -54,14 +54,14 @@ const CadastroMarcaPage: React.FC = () => {
                 );
     
                 if (response.status === 201) {
-                    carregarMarcas();
+                    carregarProductTypes();
                 }
                 setMostrarModal(false);
             } catch (error: unknown) {
                 if (axios.isAxiosError(error)) {
-                    alert(error.response && error.response.data === 'A marca já existe.');
+                    alert(error.response && error.response.data === 'O tipo de produto já existe.');
                 } else {
-                    console.error('Erro ao cadastrar marca:', error);
+                    console.error('Erro ao cadastrar tipode produto:', error);
                 }
             }
         });
@@ -70,35 +70,14 @@ const CadastroMarcaPage: React.FC = () => {
 
     // Função para deletar uma marca
     const handleDeleteMarca = (id: number) => {
-        // setMensagemModal("Você deseja realmente excluir esta marca?");
-        // setAcaoConfirmacao(() => async () => {
-        //     try {
-        //         const username = sessionStorage.getItem('username');
-
-        //         await axios.delete(`http://localhost:5124/api/Brands/DesativarMarca/${id}`, 
-        //         );
-        //         carregarMarcas();
-        //         setMostrarModal(false);
-        //     } catch (error) {
-        //         console.error('Erro ao excluir marca:', error);
-        //     }
-        // });
-        // setMostrarModal(true); // Exibe o modal
-
-        setMensagemModal("Você deseja desativar esta marca?");
+        setMensagemModal("Você deseja realmente excluir esta marca?");
         setAcaoConfirmacao(() => async () => {
             try {
-                const username = sessionStorage.getItem('username');
-
-                await axios.delete(`http://localhost:5124/api/Brands/DesativarMarca/${id}`, 
-                    { headers: {'User-Inclusion': username } }
-                );
-                alert('Marca desativada com sucesso!');
-                carregarMarcas();
-                setEditandoId(null); // Sai do modo de edição
+                await axios.delete(`http://localhost:5124/api/ProductTypes/DesativarTipoDeProduto/${id}`);
+                carregarProductTypes();
                 setMostrarModal(false);
             } catch (error) {
-                console.error('Erro ao desativar marca:', error);
+                console.error('Erro ao excluir marca:', error);
             }
         });
         setMostrarModal(true); // Exibe o modal
@@ -109,14 +88,12 @@ const CadastroMarcaPage: React.FC = () => {
         setMensagemModal("Você deseja alterar esta marca?");
         setAcaoConfirmacao(() => async () => {
             try {
-                const username = sessionStorage.getItem('username');
-
-                await axios.put(`http://localhost:5124/api/Brands/MudaMarca/${id}`, 
-                    { brandId: id, name: novoNome }, 
-                    { headers: { 'Content-Type': 'application/json', 'User-Inclusion': username } }
+                await axios.put(`http://localhost:5124/api/ProductTypes/AlterarTipoDeProduto/${id}`, 
+                    { name: novoNome }, 
+                    { headers: { 'Content-Type': 'application/json' } }
                 );
                 alert('Marca alterada com sucesso!');
-                carregarMarcas();
+                carregarProductTypes();
                 setEditandoId(null); // Sai do modo de edição
                 setMostrarModal(false);
             } catch (error) {
@@ -138,7 +115,7 @@ const CadastroMarcaPage: React.FC = () => {
     return (
         <section>
             <div>
-                <h1>Cadastro de Marca</h1>
+                <h1>Cadastro de Tipo de Produto</h1>
                 <FormularioMarca
                     identificadorForm="formCadastroMarca"
                     aMarcaCadastrada={handleMarcaCadastrada}

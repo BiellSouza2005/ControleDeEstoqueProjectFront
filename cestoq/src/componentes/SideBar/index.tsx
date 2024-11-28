@@ -13,8 +13,8 @@ const Sidebar: React.FC = () => {
     return (
         <nav className="sidebar">
             <ul>
-                <li><Link to="/cadastro-marca">Cadastro de Marca</Link></li>
-                <li><Link to="/lista-marcas">Lista de Marcas</Link></li>
+                <li><Link to="/cadastro-marca">Marca</Link></li>
+                <li><Link to="/tipo-produtos">Tipos de Produto</Link></li>
                 {/* Adicione outros links conforme necessário */}
             </ul>
             <Botao 
