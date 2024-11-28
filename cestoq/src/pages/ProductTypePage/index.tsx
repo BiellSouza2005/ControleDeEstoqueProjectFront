@@ -1,19 +1,19 @@
-import FormularioMarca from '../../componentes/FormularioMarca';
-import { ICadastro } from '../../cadastro/interfaces/ICadastro';
+import { ICadastroProductType } from '../../cadastro/interfaces/ICadastro';
 import React, { useEffect, useState } from 'react';
 import BarraDePesquisa from '../../componentes/BarraDePesquisa';
 import Botao from '../../componentes/Botao';
 import ConfirmacaoModal from '../../componentes/ConfirmacaoModal';
 import axios from 'axios'; // Importando axios
 import './ProductTypePage.css';
+import FormularioProductType from '../../componentes/FormularioProductType';
 
-interface Marca {
-    brandId: number;
+interface ProductType {
+    productTypeId: number;
     name: string;
 }
 
 const CadastroMarcaPage: React.FC = () => {
-    const [marcas, setMarcas] = useState<Marca[]>([]);
+    const [productTypes, setProductTypes] = useState<ProductType[]>([]);
     const [query, setQuery] = useState<string>(''); 
     const [mostrarModal, setMostrarModal] = useState<boolean>(false); // Controle do modal
     const [acaoConfirmacao, setAcaoConfirmacao] = useState<() => void>(() => {}); // Ação de confirmação
@@ -25,9 +25,9 @@ const CadastroMarcaPage: React.FC = () => {
     const carregarProductTypes = async () => {
         try {
             const response = await axios.get('http://localhost:5124/api/ProductTypes/VerTodosOsTiposDeProduto');
-            setMarcas(response.data);
+            setProductTypes(response.data);
         } catch (error) {
-            console.error('Erro ao carregar marcas:', error);
+            console.error('Erro ao carregar tipos de produtos:', error);
         }
     };
 
@@ -36,7 +36,7 @@ const CadastroMarcaPage: React.FC = () => {
     }, []);
 
     // Função para cadastro da marca
-    const handleMarcaCadastrada = (marca: ICadastro) => {
+    const handleProductTypeRegistred = (productType: ICadastroProductType) => {
         setMensagemModal("Você deseja adicionar este tipo de produto?");
         setAcaoConfirmacao(() => async () => {
             try {
@@ -44,7 +44,7 @@ const CadastroMarcaPage: React.FC = () => {
     
                 const response = await axios.post(
                     'http://localhost:5124/api/ProductTypes/AdicionarTipoDeProduto',
-                    { name: marca.marca },
+                    { name: productType.productType },
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ const CadastroMarcaPage: React.FC = () => {
                 if (axios.isAxiosError(error)) {
                     alert(error.response && error.response.data === 'O tipo de produto já existe.');
                 } else {
-                    console.error('Erro ao cadastrar tipode produto:', error);
+                    console.error('Erro ao cadastrar tipo de produto:', error);
                 }
             }
         });
@@ -69,35 +69,41 @@ const CadastroMarcaPage: React.FC = () => {
     };
 
     // Função para deletar uma marca
-    const handleDeleteMarca = (id: number) => {
-        setMensagemModal("Você deseja realmente excluir esta marca?");
+    const handleDeleteProductType = (id: number) => {
+        setMensagemModal("Você deseja realmente excluir este tipo de produto?");
         setAcaoConfirmacao(() => async () => {
             try {
-                await axios.delete(`http://localhost:5124/api/ProductTypes/DesativarTipoDeProduto/${id}`);
+                const username = sessionStorage.getItem('username');
+                
+                await axios.delete(`http://localhost:5124/api/ProductTypes/DesativarTipoDeProduto/${id}`,
+                { headers: {'User-Inclusion': username } }
+                )
                 carregarProductTypes();
                 setMostrarModal(false);
             } catch (error) {
-                console.error('Erro ao excluir marca:', error);
+                console.error('Erro ao excluir tipo de produto:', error);
             }
         });
         setMostrarModal(true); // Exibe o modal
     };
 
     // Função para alterar uma marca
-    const handleAlterarMarca = (id: number) => {
-        setMensagemModal("Você deseja alterar esta marca?");
+    const handleAlterarProductType = (id: number) => {
+        setMensagemModal("Você deseja alterar este tipo de produto?");
         setAcaoConfirmacao(() => async () => {
             try {
+                const username = sessionStorage.getItem('username');
+
                 await axios.put(`http://localhost:5124/api/ProductTypes/AlterarTipoDeProduto/${id}`, 
-                    { name: novoNome }, 
-                    { headers: { 'Content-Type': 'application/json' } }
+                    { productTypeId: id, name: novoNome }, 
+                    { headers: { 'Content-Type': 'application/json', 'User-Inclusion': username } }
                 );
-                alert('Marca alterada com sucesso!');
+                alert('Tipo de produto alterada com sucesso!');
                 carregarProductTypes();
                 setEditandoId(null); // Sai do modo de edição
                 setMostrarModal(false);
             } catch (error) {
-                console.error('Erro ao alterar marca:', error);
+                console.error('Erro ao alterar tipo de produto:', error);
             }
         });
         setMostrarModal(true); // Exibe o modal
@@ -108,26 +114,26 @@ const CadastroMarcaPage: React.FC = () => {
         setEditandoId(null); // Sai do modo de edição sem alterar nada
     };
 
-    const marcasFiltradas = marcas.filter(marca =>
-        marca.name && marca.name.toLowerCase().includes(query.toLowerCase())
+    const productTypeFiltrados = productTypes.filter(productTypes =>
+        productTypes.name && productTypes.name.toLowerCase().includes(query.toLowerCase())
     );
 
     return (
         <section>
             <div>
                 <h1>Cadastro de Tipo de Produto</h1>
-                <FormularioMarca
-                    identificadorForm="formCadastroMarca"
-                    aMarcaCadastrada={handleMarcaCadastrada}
+                <FormularioProductType
+                    identificadorForm="formCadastroProductType"
+                    aProductTypeRegistred={handleProductTypeRegistred}
                 />
             </div>
-            <div className="lista-marcas">
+            <div className="lista-productType">
                 <h2>Lista de Marcas</h2>
                 <BarraDePesquisa query={query} setQuery={setQuery} />
                 <ul>
-                    {marcasFiltradas.map(marca => (
-                        <li key={marca.brandId} className="marca-item">
-                            {editandoId === marca.brandId ? (
+                    {productTypeFiltrados.map(productType => (
+                        <li key={productType.productTypeId} className="productType-item">
+                            {editandoId === productType.productTypeId ? (
                                 <>
                                     <input
                                         type="text"
@@ -139,7 +145,7 @@ const CadastroMarcaPage: React.FC = () => {
                                         }}
                                     />
                                     <Botao 
-                                        onClick={() => handleAlterarMarca(marca.brandId)}
+                                        onClick={() => handleAlterarProductType(productType.productTypeId)}
                                         style={{
                                             backgroundColor: 'blue',
                                             color: 'white',
@@ -161,11 +167,11 @@ const CadastroMarcaPage: React.FC = () => {
                                 </>
                             ) : (
                                 <>
-                                    <span>{marca.name}</span>
+                                    <span>{productType.name}</span>
                                     <Botao
                                         onClick={() => {
-                                            setEditandoId(marca.brandId);
-                                            setNovoNome(marca.name); // Preenche o campo de edição com o nome atual
+                                            setEditandoId(productType.productTypeId);
+                                            setNovoNome(productType.name); // Preenche o campo de edição com o nome atual
                                         }}
                                         style={{
                                             backgroundColor: 'blue',
@@ -179,7 +185,7 @@ const CadastroMarcaPage: React.FC = () => {
                                         Editar
                                     </Botao>
                                     <Botao
-                                        onClick={() => handleDeleteMarca(marca.brandId)}
+                                        onClick={() => handleDeleteProductType(productType.productTypeId)}
                                         style={{
                                             backgroundColor: 'red',
                                             color: 'white',

@@ -1,5 +1,9 @@
-export interface ICadastro {
+export interface ICadastroMarca {
     marca: string;
+}
+
+export interface ICadastroProductType {
+    productType: string;
 }
 
 export interface MarcaAPI {

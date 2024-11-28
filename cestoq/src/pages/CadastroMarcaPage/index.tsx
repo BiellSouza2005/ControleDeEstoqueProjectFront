@@ -1,5 +1,5 @@
 import FormularioMarca from '../../componentes/FormularioMarca';
-import { ICadastro } from '../../cadastro/interfaces/ICadastro';
+import { ICadastroMarca } from '../../cadastro/interfaces/ICadastro';
 import React, { useEffect, useState } from 'react';
 import BarraDePesquisa from '../../componentes/BarraDePesquisa';
 import Botao from '../../componentes/Botao';
@@ -36,7 +36,7 @@ const CadastroMarcaPage: React.FC = () => {
     }, []);
 
     // Função para cadastro da marca
-    const handleMarcaCadastrada = (marca: ICadastro) => {
+    const handleMarcaCadastrada = (marca: ICadastroMarca) => {
         setMensagemModal("Você deseja adicionar esta marca?");
         setAcaoConfirmacao(() => async () => {
             try {

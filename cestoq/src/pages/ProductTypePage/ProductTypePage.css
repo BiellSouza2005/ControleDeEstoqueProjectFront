@@ -1,9 +1,9 @@
-.lista-marcas ul {
+.lista-productType ul {
     list-style-type: none;
     padding: 0;
 }
 
-.marca-item {
+.productType-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -11,11 +11,11 @@
     border-bottom: 1px solid #ddd;
 }
 
-.marca-item span {
+.productType-item span {
     flex: 1;
     text-align: left;
 }
 
-.marca-item button {
+.productType-item button {
     margin-left: auto;
 }
