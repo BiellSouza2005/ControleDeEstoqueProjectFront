@@ -2,11 +2,11 @@ import { useState } from 'react'
 import Botao from '../Botao'
 import CampoTexto from '../CampoTexto'
 import './FormularioMarca.css'
-import { ICadastro } from '../../cadastro/interfaces/ICadastro'
+import { ICadastroMarca } from '../../cadastro/interfaces/ICadastro'
 
 interface FormularioMarcaProps {
     identificadorForm: string;
-    aMarcaCadastrada: (marca: ICadastro) => void;
+    aMarcaCadastrada: (marca: ICadastroMarca) => void;
     
 }
 

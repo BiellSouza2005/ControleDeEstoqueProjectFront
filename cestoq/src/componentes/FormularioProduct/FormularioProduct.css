@@ -1,0 +1,43 @@
+.formularioProduct {
+    display: flex;
+    justify-content: center;
+    margin: 80px 0;
+}
+
+.formularioProduct form {
+    max-width: 80%;
+    background-color: #F2F2F2;
+    border-radius: 20px;
+    padding: 36px 64px;
+    box-shadow: 8px 8px 16px rgba(0,0,0, 0.08);
+}
+
+.formularioProduct .campo-select {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.formularioProduct .campo-select label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.formularioProduct .campo-select select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.formularioProduct .campo-select select:focus {
+    border-color: #007BFF;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+}
+

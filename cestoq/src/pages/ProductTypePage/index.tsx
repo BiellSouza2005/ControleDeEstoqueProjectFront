@@ -21,7 +21,7 @@ const CadastroMarcaPage: React.FC = () => {
     const [editandoId, setEditandoId] = useState<number | null>(null); // Controle do modo de edição
     const [novoNome, setNovoNome] = useState<string>(''); // Estado para armazenar o novo nome da marca
 
-    // Função para carregar as marcas do backend
+    // Função para carregar os tipos de produto do backend
     const carregarProductTypes = async () => {
         try {
             const response = await axios.get('http://localhost:5124/api/ProductTypes/VerTodosOsTiposDeProduto');
@@ -74,7 +74,7 @@ const CadastroMarcaPage: React.FC = () => {
         setAcaoConfirmacao(() => async () => {
             try {
                 const username = sessionStorage.getItem('username');
-                
+
                 await axios.delete(`http://localhost:5124/api/ProductTypes/DesativarTipoDeProduto/${id}`,
                 { headers: {'User-Inclusion': username } }
                 )
