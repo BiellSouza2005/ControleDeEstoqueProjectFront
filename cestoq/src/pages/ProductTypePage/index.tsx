@@ -7,6 +7,8 @@ import axios from 'axios'; // Importando axios
 import './ProductTypePage.css';
 import FormularioProductType from '../../componentes/FormularioProductType';
 
+
+
 interface ProductType {
     productTypeId: number;
     name: string;
@@ -129,7 +131,7 @@ const CadastroMarcaPage: React.FC = () => {
             </div>
             <div className="lista-productType">
                 <h2>Lista de Marcas</h2>
-                <BarraDePesquisa query={query} setQuery={setQuery} />
+                <BarraDePesquisa query={query} setQuery={setQuery} placeholderprops='Pesquisar tipos de produtos...' />
                 <ul>
                     {productTypeFiltrados.map(productType => (
                         <li key={productType.productTypeId} className="productType-item">

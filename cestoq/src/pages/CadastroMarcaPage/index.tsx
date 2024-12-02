@@ -146,7 +146,7 @@ const CadastroMarcaPage: React.FC = () => {
             </div>
             <div className="lista-marcas">
                 <h2>Lista de Marcas</h2>
-                <BarraDePesquisa query={query} setQuery={setQuery} />
+                <BarraDePesquisa query={query} setQuery={setQuery} placeholderprops='Pesquisar marcas...' />
                 <ul>
                     {marcasFiltradas.map(marca => (
                         <li key={marca.brandId} className="marca-item">

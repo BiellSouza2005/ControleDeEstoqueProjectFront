@@ -5,6 +5,7 @@ import ConfirmacaoModal from '../../componentes/ConfirmacaoModal';
 import axios from 'axios';
 import './ProductPage.css';
 import FormularioProduct from '../../componentes/FormularioProduct';
+import EditProductModal from '../../componentes/EditProductModal';
 
 interface Product {
     productId: number;
@@ -20,13 +21,12 @@ const ProductPage: React.FC = () => {
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
     const [acaoConfirmacao, setAcaoConfirmacao] = useState<() => void>(() => {});
     const [mensagemModal, setMensagemModal] = useState<string>('');
-    const [editandoId, setEditandoId] = useState<number | null>(null);
-    const [novoNome, setNovoNome] = useState<string>('');
-    const [novoPreco, setNovoPreco] = useState<number>(0);
+
+    const [editProduct, setEditProduct] = useState<Product | null>(null);
 
     const carregarProdutos = async () => {
         try {
-            const response = await axios.get('http://localhost:5124/api/Products/VerTodosOsProdutos');
+            const response = await axios.get('http://localhost:5124/api/Products/VerTodosProdutos');
             setProducts(response.data);
         } catch (error) {
             console.error('Erro ao carregar produtos:', error);
@@ -81,28 +81,24 @@ const ProductPage: React.FC = () => {
         setMostrarModal(true);
     };
 
-    const handleAlterarProduto = (id: number) => {
-        setMensagemModal("Você deseja alterar este produto?");
-        setAcaoConfirmacao(() => async () => {
-            try {
-                const username = sessionStorage.getItem('username');
-                await axios.put(
-                    `http://localhost:5124/api/Products/AlterarProduto/${id}`,
-                    { productId: id, name: novoNome, price: novoPreco },
-                    { headers: { 'Content-Type': 'application/json', 'User-Inclusion': username } }
-                );
-                carregarProdutos();
-                setEditandoId(null);
-                setMostrarModal(false);
-            } catch (error) {
-                console.error('Erro ao alterar produto:', error);
-            }
-        });
-        setMostrarModal(true);
-    };
-
-    const handleCancelarEdicao = () => {
-        setEditandoId(null);
+    const handleEditProduto = async (updatedProduct: Product) => {
+        try {
+            const username = sessionStorage.getItem('username');
+            await axios.put(
+                `http://localhost:5124/api/Products/AlterarProduto/${updatedProduct.productId}`,
+                updatedProduct,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'User-Inclusion': username,
+                    },
+                }
+            );
+            carregarProdutos();
+            setEditProduct(null);
+        } catch (error) {
+            console.error('Erro ao editar produto:', error);
+        }
     };
 
     const produtosFiltrados = products.filter(product =>
@@ -118,44 +114,39 @@ const ProductPage: React.FC = () => {
                     aProductRegistered={handleProdutoCadastrado}
                 />
             </div>
-            <div className="lista-produtos">
+            <div className="lista-products">
                 <h2>Lista de Produtos</h2>
-                <BarraDePesquisa query={query} setQuery={setQuery} />
+                <BarraDePesquisa query={query} setQuery={setQuery} placeholderprops="Pesquisar produtos..." />
                 <ul>
                     {produtosFiltrados.map(product => (
-                        <li key={product.productId} className="produto-item">
-                            {editandoId === product.productId ? (
-                                <>
-                                    <input
-                                        type="text"
-                                        value={novoNome}
-                                        onChange={e => setNovoNome(e.target.value)}
-                                        placeholder="Novo nome"
-                                    />
-                                    <input
-                                        type="number"
-                                        value={novoPreco}
-                                        onChange={e => setNovoPreco(Number(e.target.value))}
-                                        placeholder="Novo preço"
-                                    />
-                                    <Botao onClick={() => handleAlterarProduto(product.productId)}>Salvar</Botao>
-                                    <Botao onClick={handleCancelarEdicao}>Cancelar</Botao>
-                                </>
-                            ) : (
-                                <>
-                                    <span>{product.name} - R${product.price}</span>
-                                    <Botao
-                                        onClick={() => {
-                                            setEditandoId(product.productId);
-                                            setNovoNome(product.name);
-                                            setNovoPreco(product.price);
-                                        }}
-                                    >
-                                        Editar
-                                    </Botao>
-                                    <Botao onClick={() => handleDeleteProduto(product.productId)}>Excluir</Botao>
-                                </>
-                            )}
+                        <li key={product.productId} className="product-item">
+                            <span>{product.name} - R${product.price}</span>
+                            <Botao
+                                onClick={() => setEditProduct(product)}
+                                style={{
+                                    backgroundColor: 'blue',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '5px 5px',
+                                    cursor: 'pointer',
+                                    margin: '0px'
+                                }}
+                            >
+                                Editar
+                            </Botao>
+                            <Botao
+                                onClick={() => handleDeleteProduto(product.productId)}
+                                style={{
+                                    backgroundColor: 'red',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '5px 5px',
+                                    cursor: 'pointer',
+                                    margin: '0px 0px 0px 10px'
+                                }}
+                            >
+                                Excluir
+                            </Botao>
                         </li>
                     ))}
                 </ul>
@@ -165,6 +156,13 @@ const ProductPage: React.FC = () => {
                     mensagem={mensagemModal}
                     onConfirmar={acaoConfirmacao}
                     onCancelar={() => setMostrarModal(false)}
+                />
+            )}
+            {editProduct && (
+                <EditProductModal
+                    product={editProduct}
+                    onSave={handleEditProduto}
+                    onClose={() => setEditProduct(null)}
                 />
             )}
         </section>

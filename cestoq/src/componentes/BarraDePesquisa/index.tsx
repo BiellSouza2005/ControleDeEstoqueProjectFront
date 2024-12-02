@@ -2,16 +2,17 @@ import React from 'react';
 import './BarraDePesquisa.css'
 
 interface BarraDePesquisaProps {
-    query: string;                      //representa o que o usuário digita
+    query: string;     
+    placeholderprops: string;                 //representa o que o usuário digita
     setQuery: (query: string) => void;  //atualiza a query toda vez que o usuário digita algo novo
 }
 
-const BarraDePesquisa: React.FC<BarraDePesquisaProps> = ({ query, setQuery }) => {
+const BarraDePesquisa: React.FC<BarraDePesquisaProps> = ({ query, setQuery, placeholderprops }) => {
     return (
         <input
             className="BarraDePesquisa"
             type="text"
-            placeholder="Pesquisar marca..."
+            placeholder={placeholderprops}
             value={query}
             onChange={e => setQuery(e.target.value)}
 

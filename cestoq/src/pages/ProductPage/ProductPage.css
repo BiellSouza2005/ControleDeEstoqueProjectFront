@@ -1,9 +1,9 @@
-.lista-productType ul {
+.lista-products ul {
     list-style-type: none;
     padding: 0;
 }
 
-.productType-item {
+.product-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -11,11 +11,11 @@
     border-bottom: 1px solid #ddd;
 }
 
-.productType-item span {
+.product-item span {
     flex: 1;
     text-align: left;
 }
 
-.productType-item button {
+.product-item button {
     margin-left: auto;
 }
