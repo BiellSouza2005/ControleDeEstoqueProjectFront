@@ -10,6 +10,11 @@ export interface ICadastroProduct {
     product: string;
 }
 
+export interface ICadastroClient {
+    name: string;
+    email: string;
+}
+
 export interface MarcaAPI {
     id: number;
     nome: string;

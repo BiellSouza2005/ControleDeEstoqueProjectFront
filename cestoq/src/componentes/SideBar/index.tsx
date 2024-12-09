@@ -16,6 +16,7 @@ const Sidebar: React.FC = () => {
                 <li><Link to="/cadastro-marca">Marca</Link></li>
                 <li><Link to="/tipo-produtos">Tipos de Produto</Link></li>
                 <li><Link to="/produtos">Produtos</Link></li>
+                <li><Link to="/clientes">Clientes</Link></li>
                 {/* Adicione outros links conforme necessário */}
             </ul>
             <Botao 
