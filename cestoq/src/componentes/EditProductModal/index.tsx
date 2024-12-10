@@ -19,6 +19,7 @@ interface EditarProdutoModalProps {
         productId: number;
         name: string;
         price: number;
+        quantity: number;
         productTypeId: number;
         brandId: number;
     };
@@ -27,6 +28,7 @@ interface EditarProdutoModalProps {
         productId: number;
         name: string;
         price: number;
+        quantity: number;
         productTypeId: number;
         brandId: number;
     }) => void;
@@ -36,6 +38,7 @@ interface EditarProdutoModalProps {
 const EditProductModal = ({ product, onClose, onSave,}: EditarProdutoModalProps) => {
     const [name, setName] = useState(product.name);
     const [price, setPrice] = useState(product.price);
+    const [quantity, setQuantity] = useState(product.quantity);
     const [productTypeId, setProductTypeId] = useState(product.productTypeId.toString());
     const [brandId, setBrandId] = useState(product.brandId.toString());
     const [productTypes, setProductTypes] = useState<ProductType[]>([]);
@@ -71,6 +74,7 @@ const EditProductModal = ({ product, onClose, onSave,}: EditarProdutoModalProps)
             productId: product.productId,
             name,
             price,
+            quantity,
             productTypeId: parseInt(productTypeId, 10),
             brandId: parseInt(brandId, 10),
         });
@@ -86,13 +90,23 @@ const EditProductModal = ({ product, onClose, onSave,}: EditarProdutoModalProps)
                     placeholder="Edite o nome do produto"
                     valor={name}
                     aoAlterado={setName}
+                    tipo='text'
                 />
                 <CampoTexto
                     label="Preço"
                     identificador="precoProduto"
                     placeholder="Edite o nome do produto"
                     valor={price.toString()}
-                    aoAlterado={(valor) => setPrice(Number(valor))}
+                    aoAlterado={(valor) => setPrice(parseFloat(valor))}
+                    tipo='number'
+                />
+                <CampoTexto
+                    label="Quantidade"
+                    identificador="quantidadeProduto"
+                    placeholder="Edite a quantidade do produto"
+                    valor={quantity.toString()}
+                    aoAlterado={(valor) => setQuantity(Number(valor))}
+                    tipo='number'
                 />
                 <select value={productTypeId} onChange={(e) => setProductTypeId(e.target.value)}>
                     <option value="" disabled>

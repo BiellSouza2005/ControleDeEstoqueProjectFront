@@ -33,6 +33,7 @@ const FormularioProductType = ({identificadorForm, aProductTypeRegistred}: Formu
                     placeholder="Digite uma tipo de produto" 
                     valor={productType}
                     aoAlterado={valor => setProductType(valor)}
+                    tipo='text'
                 />
                 <Botao>
                     Criar Marca

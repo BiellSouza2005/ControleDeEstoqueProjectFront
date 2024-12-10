@@ -19,6 +19,7 @@ interface FormularioProductProps {
     aProductRegistered: (product: {
         name: string;
         price: number;
+        quantity: number;
         productTypeId: number;
         brandId: number;
     }) => void;
@@ -33,7 +34,8 @@ const FormularioProduct = ({
     brands,
 }: FormularioProductProps) => {
     const [name, setName] = useState('');
-    const [price, setPrice] = useState<number>(0);
+    const [price, setPrice] = useState<number>(0.0);
+    const [quantity, setQuantity] = useState<number>(0);
     const [productTypeId, setProductTypeId] = useState<string>('');
     const [brandId, setBrandId] = useState<string>('');
 
@@ -48,14 +50,36 @@ const FormularioProduct = ({
         aProductRegistered({
             name,
             price,
+            quantity,
             productTypeId: parseInt(productTypeId, 10),
             brandId: parseInt(brandId, 10),
         });
 
         setName('');
-        setPrice(0);
+        setPrice(0.0);
         setProductTypeId('');
         setBrandId('');
+    };
+
+    const handlePriceChange = (valor: string) => {
+        // Permitir apenas números, pontos e vírgulas
+        const formattedValue = valor.replace(/[^0-9.,]/g, '').replace(',', '.');
+        const decimalValue = parseFloat(formattedValue);
+        if (!isNaN(decimalValue)) {
+            setPrice(decimalValue);
+        } else {
+            setPrice(0); // ou qualquer valor padrão que você queira
+        }
+    };
+
+    const handleQuantityChange = (valor: string) => {
+        const formattedValue = valor.replace(/[^0-9.,]/g, '').replace('.', '');
+        const intValue = parseInt(formattedValue);
+        if (!isNaN(intValue)) {
+            setQuantity(intValue);
+        } else {
+            setQuantity(0); // ou qualquer valor padrão que você queira
+        }
     };
 
     return (
@@ -69,6 +93,7 @@ const FormularioProduct = ({
                     placeholder="Digite o nome do produto"
                     valor={name}
                     aoAlterado={(valor) => setName(valor)}
+                    tipo='text'
                 />
                 <CampoTexto
                     identificador="idProductPrice"
@@ -76,7 +101,17 @@ const FormularioProduct = ({
                     label="Preço do Produto"
                     placeholder="Digite o preço do produto"
                     valor={price.toString()}
-                    aoAlterado={(valor) => setPrice(Number(valor))}
+                    aoAlterado={handlePriceChange}
+                    tipo='number'
+                />
+                <CampoTexto
+                    identificador="idProductQuantity"
+                    obrigatorio={true}
+                    label="Quantidade do Produto"
+                    placeholder="Digite a quantidade do produto"
+                    valor={quantity.toString()}
+                    aoAlterado={handleQuantityChange}
+                    tipo='text'
                 />
                 <div className="campo-select">
                     <label htmlFor="productTypeSelect">Tipo de Produto</label>

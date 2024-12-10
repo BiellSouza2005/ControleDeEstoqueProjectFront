@@ -33,6 +33,7 @@ const FormularioMarca = ({identificadorForm, aMarcaCadastrada}: FormularioMarcaP
                     placeholder="Digite uma marca" 
                     valor={marca}
                     aoAlterado={valor => setMarca(valor)}
+                    tipo='text'
                 />
                 <Botao>
                     Criar Marca

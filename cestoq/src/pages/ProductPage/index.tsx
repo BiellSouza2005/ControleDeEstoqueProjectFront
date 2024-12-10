@@ -11,6 +11,7 @@ interface Product {
     productId: number;
     name: string;
     price: number;
+    quantity: number;
     brandId: number;
     productTypeId: number;
 }
@@ -170,6 +171,7 @@ const ProductPage: React.FC = () => {
                         <tr>
                             <th>Nome</th>
                             <th>Preço</th>
+                            <th>Quantidade</th>
                             <th>Marca</th>
                             <th>Tipo de Produto</th>
                             <th>Ações</th>
@@ -180,6 +182,7 @@ const ProductPage: React.FC = () => {
                             <tr key={product.productId}>
                                 <td>{product.name}</td>
                                 <td>R${product.price.toFixed(2)}</td>
+                                <td>{product.quantity}</td>
                                 <td>{getEntityNameById(product.brandId, brands, 'brandId')}</td>
                                 <td>{getEntityNameById(product.productTypeId, productTypes, 'productTypeId')}</td>
                                 <td>

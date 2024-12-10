@@ -36,6 +36,7 @@ const FormularioClient = ({identificadorForm, aClientRegistred}: FormularioClien
                     placeholder="Digite o nome do cliente" 
                     valor={Name}
                     aoAlterado={valor => setName(valor)}
+                    tipo='text'
                 />
                 <CampoTexto 
                     identificador='idClient'
@@ -44,6 +45,7 @@ const FormularioClient = ({identificadorForm, aClientRegistred}: FormularioClien
                     placeholder="Digite o email do cliente" 
                     valor={Email}
                     aoAlterado={valor => setEmail(valor)}
+                    tipo='email'
                 />
                 <Botao>
                     Criar Cliente
