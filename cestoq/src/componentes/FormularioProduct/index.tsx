@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+// FormularioProduct.tsx
+import { useState } from 'react';
 import Botao from '../Botao';
 import CampoTexto from '../CampoTexto';
 import './FormularioProduct.css';
-import axios from 'axios';
 
 interface ProductType {
     productTypeId: number;
@@ -22,82 +22,41 @@ interface FormularioProductProps {
         productTypeId: number;
         brandId: number;
     }) => void;
+    productTypes: ProductType[];
+    brands: Brand[];
 }
 
-const FormularioProduct = ({ identificadorForm, aProductRegistered }: FormularioProductProps) => {
+const FormularioProduct = ({
+    identificadorForm,
+    aProductRegistered,
+    productTypes,
+    brands,
+}: FormularioProductProps) => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState<number>(0);
-    const [productTypeId, setProductTypeId] = useState<string>(''); 
-    const [brandId, setBrandId] = useState<string>(''); 
-    const [productTypes, setProductTypes] = useState<ProductType[]>([]);
-    const [brands, setBrands] = useState<Brand[]>([]); 
-    const [cachedProductTypes, setCachedProductTypes] = useState<ProductType[]>([]);
-    const [cachedBrands, setCachedBrands] = useState<Brand[]>([]);
-
-    // Função para carregar os tipos de produtos do backend
-    const carregarProductTypes = async () => {
-        if (cachedProductTypes.length > 0) {
-            setProductTypes(cachedProductTypes);
-            return;
-        }
-
-        try {
-            const response = await axios.get<ProductType[]>(
-                'http://localhost:5124/api/ProductTypes/VerTodosOsTiposDeProduto'
-            );
-            setProductTypes(response.data);
-            setCachedProductTypes(response.data); // Atualiza o cache
-        } catch (error) {
-            console.error('Erro ao carregar tipos de produtos:', error);
-        }
-    };
-
-    // Função para carregar as marcas do backend
-    const carregarMarcas = async () => {
-        if (cachedBrands.length > 0) {
-            setBrands(cachedBrands);
-            return;
-        }
-
-        try {
-            const response = await axios.get<Brand[]>('http://localhost:5124/api/Brands/VerTodasAsMarcas');
-            setBrands(response.data);
-            setCachedBrands(response.data); // Atualiza o cache
-        } catch (error) {
-            console.error('Erro ao carregar marcas:', error);
-        }
-    };
-
-    // Carregar os tipos de produtos e marcas ao montar o componente
-    useEffect(() => {
-        carregarProductTypes();
-        carregarMarcas();
-    }, []);
+    const [productTypeId, setProductTypeId] = useState<string>('');
+    const [brandId, setBrandId] = useState<string>('');
 
     const aoSalvar = (evento: React.FormEvent<HTMLFormElement>) => {
         evento.preventDefault();
-    
-        // Validação para garantir que os selects não estejam vazios
+
         if (!productTypeId || !brandId) {
             alert('Por favor, selecione um tipo de produto e uma marca.');
             return;
         }
-    
-        // Envia os dados do produto
+
         aProductRegistered({
             name,
             price,
-            productTypeId: parseInt(productTypeId, 10), // Converte para número
-            brandId: parseInt(brandId, 10), // Converte para número
+            productTypeId: parseInt(productTypeId, 10),
+            brandId: parseInt(brandId, 10),
         });
-    
-        // Limpa os campos do formulário
+
         setName('');
         setPrice(0);
-        setProductTypeId(''); // Reseta para string vazia
-        setBrandId(''); // Reseta para string vazia
+        setProductTypeId('');
+        setBrandId('');
     };
-    
 
     return (
         <section className="formularioProduct">

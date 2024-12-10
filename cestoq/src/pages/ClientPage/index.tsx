@@ -133,89 +133,107 @@ const CadastroClientPage: React.FC = () => {
             <div className="lista-clients">
                 <h2>Lista de Clientes</h2>
                 <BarraDePesquisa query={query} setQuery={setQuery} placeholderprops='Pesquisar clientes...' />
-                <ul>
-                    {clientsFiltrados.map(client => (
-                        <li key={client.clientId} className="client-item">
-                            {editandoId === client.clientId ? (
-                                <>
-                                    <input
-                                        type="text"
-                                        value={novoNome}
-                                        onChange={e => setNovoNome(e.target.value)}
-                                        placeholder="Digite o novo nome"
-                                        style={{
-                                            width: '100%'
-                                        }}
-                                    />
-                                    <input
-                                        type="text"
-                                        value={novoEmail}
-                                        onChange={e => setNovoEmail(e.target.value)}
-                                        placeholder="Digite o novo email"
-                                        style={{
-                                            width: '100%'
-                                        }}
-                                    />
-                                    <Botao 
-                                        onClick={() => handleAlterarClient(client.clientId)}
-                                        style={{
-                                            backgroundColor: 'blue',
-                                            color: 'white',
-                                            border: 'none',
-                                            padding: '5px 5px',
-                                            cursor: 'pointer',
-                                        }}
-                                    >Salvar</Botao>
-                                    <Botao 
-                                        onClick={handleCancelarEdicao}
-                                        style={{
-                                            backgroundColor: 'blue',
-                                            color: 'white',
-                                            border: 'none',
-                                            padding: '5px 5px',
-                                            cursor: 'pointer',
-                                        }}
-                                    >Cancelar</Botao>
-                                </>
-                            ) : (
-                                <>
-                                    
-                                    <span>{client.name} - {client.email}</span>
-                                    <Botao
-                                        onClick={() => {
-                                            setEditandoId(client.clientId);
-                                            setNovoNome(client.name); // Preenche o campo de edição com o nome atual
-                                            setNovoEmail(client.email);
-                                        }}
-                                        style={{
-                                            backgroundColor: 'blue',
-                                            color: 'white',
-                                            border: 'none',
-                                            padding: '5px 5px',
-                                            cursor: 'pointer',
-                                            margin: '0px'
-                                        }}
-                                    >
-                                        Editar
-                                    </Botao>
-                                    <Botao
-                                        onClick={() => handleDeleteClient(client.clientId)}
-                                        style={{
-                                            backgroundColor: 'red',
-                                            color: 'white',
-                                            border: 'none',
-                                            padding: '5px 5px',
-                                            cursor: 'pointer',
-                                            margin: '0px 0px 0px 10px'
-                                        }}
-                                    >
-                                        Excluir
-                                    </Botao>
-                                </>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {clientsFiltrados.map(client => (
+                            <tr key={client.clientId}>
+                                {editandoId === client.clientId ? (
+                                    <>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                value={novoNome}
+                                                onChange={e => setNovoNome(e.target.value)}
+                                                placeholder="Digite o novo nome"
+                                                style={{ width: '100%' }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                value={novoEmail}
+                                                onChange={e => setNovoEmail(e.target.value)}
+                                                placeholder="Digite o novo email"
+                                                style={{ width: '100%' }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <Botao
+                                                onClick={() => handleAlterarClient(client.clientId)}
+                                                style={{
+                                                    backgroundColor: 'blue',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    padding: '5px 5px',
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                Salvar
+                                            </Botao>
+                                            <Botao
+                                                onClick={handleCancelarEdicao}
+                                                style={{
+                                                    backgroundColor: 'blue',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    padding: '5px 5px',
+                                                    cursor: 'pointer',
+                                                    marginLeft: '5px',
+                                                }}
+                                            >
+                                                Cancelar
+                                            </Botao>
+                                        </td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <td>{client.name}</td>
+                                        <td>{client.email}</td>
+                                        <td>
+                                            <Botao
+                                                onClick={() => {
+                                                    setEditandoId(client.clientId);
+                                                    setNovoNome(client.name); // Preenche o campo de edição com o nome atual
+                                                    setNovoEmail(client.email);
+                                                }}
+                                                style={{
+                                                    backgroundColor: 'blue',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    padding: '5px 5px',
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                Editar
+                                            </Botao>
+                                            <Botao
+                                                onClick={() => handleDeleteClient(client.clientId)}
+                                                style={{
+                                                    backgroundColor: 'red',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    padding: '5px 5px',
+                                                    cursor: 'pointer',
+                                                    marginLeft: '5px',
+                                                }}
+                                            >
+                                                Excluir
+                                            </Botao>
+                                        </td>
+                                    </>
+                                )}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
             </div>
 
             {mostrarModal && (
