@@ -7,6 +7,7 @@ import LoginUsuarioPage from './pages/LoginUsuarioPage';
 import Sidebar from './componentes/SideBar';
 import ProductPage from './pages/ProductPage';
 import CadastroClientPage from './pages/ClientPage';
+import OrderPage from './pages/OrderPage';
 
 const RoutesConfig: React.FC = () => (
     <Routes>
@@ -14,6 +15,7 @@ const RoutesConfig: React.FC = () => (
         <Route path="/cadastro-marca" element={<CadastroMarcaPage />} />
         <Route path="/tipo-produtos" element={<ProductTypePage />} />
         <Route path="/produtos" element={<ProductPage />} />
+        <Route path="/pedidos" element={<OrderPage />} />
         <Route path="/clientes" element={<CadastroClientPage />} />
         <Route path="/cadastro-usuario" element={<CadastroUsuarioPage />} />
         <Route path="/login" element={<LoginUsuarioPage />} />

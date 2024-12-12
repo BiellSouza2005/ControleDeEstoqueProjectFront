@@ -23,6 +23,8 @@ const CadastroClientPage: React.FC = () => {
     const [editandoId, setEditandoId] = useState<number | null>(null); // Controle do modo de edição
     const [novoNome, setNovoNome] = useState<string>(''); // Estado para armazenar o novo nome da marca
     const [novoEmail, setNovoEmail] = useState<string>(''); // Estado para armazenar o novo nome da marca
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
 
     // Função para carregar os tipos de produto do backend
     const carregarClients = async () => {
@@ -121,6 +123,18 @@ const CadastroClientPage: React.FC = () => {
         clients.name && clients.name.toLowerCase().includes(query.toLowerCase())
     );
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const clientsPaginados = clientsFiltrados.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(clientsFiltrados.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber: number) => {
+        if (pageNumber >= 1 && pageNumber <= totalPages) {
+            setCurrentPage(pageNumber);
+        }
+    };
+
     return (
         <section>
             <div>
@@ -142,7 +156,7 @@ const CadastroClientPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {clientsFiltrados.map(client => (
+                        {clientsPaginados.map(client => (
                             <tr key={client.clientId}>
                                 {editandoId === client.clientId ? (
                                     <>
@@ -233,7 +247,29 @@ const CadastroClientPage: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
-
+                <div className="pagination">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        Anterior
+                    </button>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => handlePageChange(index + 1)}
+                            className={currentPage === index + 1 ? 'active' : ''}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        Próxima
+                    </button>
+                </div>
             </div>
 
             {mostrarModal && (

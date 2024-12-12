@@ -1,0 +1,124 @@
+/* Estilo geral do formulário */
+.formulario-pedido {
+  max-width: 900px; /* Tamanho máximo */
+  margin: 0 auto; /* Centraliza o formulário */
+  background-color: #f9f9f9; /* Fundo claro */
+  padding: 20px; /* Espaçamento interno */
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaçamento entre as seções */
+}
+  
+  /* Estilo de título */
+  .formulario-pedido h2 {
+    text-align: center;
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilo de cada seção do formulário */
+  .secao-formulario {
+    display: flex;
+    flex-wrap: wrap; /* Ajusta para múltiplas linhas em telas menores */
+    gap: 20px; /* Espaçamento entre os elementos */
+  }
+  
+  /* Estilo de cada campo */
+  .campo {
+    flex: 1 1 45%; /* Ocupa 45% da largura e ajusta conforme necessário */
+    min-width: 250px; /* Largura mínima para evitar muito encolhimento */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Label dos campos */
+  .campo label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #444;
+  }
+  
+  /* Input dos campos */
+  .campo input,
+  .campo select {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .campo input:focus,
+  .campo select:focus {
+    border-color: #007bff; /* Azul ao foco */
+  }
+  
+  /* Estilo da tabela de itens/pagamentos */
+  .tabela-dinamica {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .select-item {
+    padding: 6px;
+    background-color: #121212;
+  }
+
+ h3{
+    color: black;
+  }
+  
+  .tabela-dinamica th,
+  .tabela-dinamica td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    padding-right: 30px;
+    text-align: left;
+    color: black;
+  }
+  
+  .tabela-dinamica th {
+    background-color: #f3f3f3;
+    font-weight: bold;
+  }
+  
+  .tabela-dinamica tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+  
+  /* Botões */
+  .botoes-formulario {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: 10px;
+  
+  }
+  
+  .botoes-formulario button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+  }
+
+  .add-button {
+    margin-top: 15px;
+  }
+  
+  .botoes-formulario .botao-enviar {
+    background-color: #28a745; /* Verde */
+  }
+  
+  .botoes-formulario button:hover {
+    opacity: 0.9;
+  }
+
+.item-input {
+  margin-left: 0px;
+  padding-right: 0px;
+}
