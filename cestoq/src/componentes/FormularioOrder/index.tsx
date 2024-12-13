@@ -188,7 +188,7 @@ const FormularioOrder = ({ clients, products, identificadorForm, aOrderRegistred
                                             }}
                                         >
                                         <option value="" disabled>
-                                            Selecione um cliente
+                                            Selecione um Produto
                                         </option>
                                         {products.map((product) => (
                                             <option key={product.productId} value={product.productId}>

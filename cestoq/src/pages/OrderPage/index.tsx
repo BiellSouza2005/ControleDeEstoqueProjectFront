@@ -6,8 +6,7 @@ import axios from 'axios';
 import './OrderPage.css';
 import EditProductModal from '../../componentes/EditProductModal';
 import FormularioOrder from '../../componentes/FormularioOrder';
-import ProductModal from '../../componentes/ProductModal';
-import PaymentModal from '../../componentes/PaymentModal';
+
 
 interface Order {
     orderId: number;
@@ -39,19 +38,8 @@ interface Client {
     email: string;
 }
 
-interface OrderPageProps {
-    currentOrderId: number;
-}
 
-interface Payment {
-    paymentId?: number;
-    orderId: number;
-    amount: number;
-    paymentDate: Date;
-    paymentMethod: string;
-}
-
-const OrderPage = ({ currentOrderId }: OrderPageProps) => {
+const OrderPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [clients, setClients] = useState<Client[]>([]);
     const [query, setQuery] = useState<string>('');
@@ -59,8 +47,6 @@ const OrderPage = ({ currentOrderId }: OrderPageProps) => {
     const [acaoConfirmacao, setAcaoConfirmacao] = useState<() => void>(() => {});
     const [mensagemModal, setMensagemModal] = useState<string>('');
     const [editProduct, setEditProduct] = useState<Product | null>(null);
-    const [mostrarProductModal, setMostrarProductModal] = useState<boolean>(false);
-    const [mostrarPaymentModal, setMostrarPaymentModal] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
     
@@ -97,9 +83,7 @@ const OrderPage = ({ currentOrderId }: OrderPageProps) => {
                 const username = sessionStorage.getItem('username');
                 const response = await axios.post(
                     'http://localhost:5124/api/Order/AdicionarPedido',
-                    {
-                        order
-                    },
+                        order,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -185,8 +169,6 @@ const OrderPage = ({ currentOrderId }: OrderPageProps) => {
                     aOrderRegistred={handleOrderCadastrado} 
                     products={products} 
                     clients={clients}/>
-                <Botao onClick={() => setMostrarProductModal(true)}>Abrir Modal de Produtos</Botao>
-                <Botao onClick={() => setMostrarPaymentModal(true)}>Abrir Modal de Pagamentos</Botao>
             </div>
             <div className="lista-products">
                 <h2>Lista de Produtos</h2>
@@ -267,28 +249,7 @@ const OrderPage = ({ currentOrderId }: OrderPageProps) => {
                     onClose={() => setEditProduct(null)}
                 />
             )}
-            {mostrarProductModal && (
-                <ProductModal
-                    onClose={() => setMostrarProductModal(false)}
-                    product={products[0]} 
-                    onSave={(updatedProduct: Product) => {
-                        setProducts(prevProducts =>
-                            prevProducts.map(product =>
-                                product.productId === updatedProduct.productId ? updatedProduct : product
-                            )
-                        );
-                    }}             />
-            )}
-            {mostrarPaymentModal && (
-                <PaymentModal
-                    onClose={() => setMostrarPaymentModal(false)} 
-                    orderId={currentOrderId}
-                    onSave={(payment: Payment) => {
-                        console.log('Pagamento salvo:', payment);
-                        // Implementar lógica de salvamento
-                    }}
-                    />
-            )}
+
         </section>
     );
 };
