@@ -151,7 +151,7 @@ const FormularioOrder = ({ clients, products, identificadorForm, aOrderRegistred
                             value={clientId}
                             onChange={(e) => setClientId(Number(e.target.value))}
                         >
-                        <option value="" disabled>
+                        <option value="0" disabled>
                             Selecione um cliente
                         </option>
                         {clients.map((client) => (
@@ -187,7 +187,7 @@ const FormularioOrder = ({ clients, products, identificadorForm, aOrderRegistred
                                                 setOrderItems(updatedItems);
                                             }}
                                         >
-                                        <option value="" disabled>
+                                        <option value="0" disabled>
                                             Selecione um Produto
                                         </option>
                                         {products.map((product) => (
