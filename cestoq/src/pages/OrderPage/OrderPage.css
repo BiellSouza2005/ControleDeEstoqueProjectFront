@@ -71,14 +71,34 @@ tbody td:last-child {
 }
 
 button {
-    padding: 5px 10px;
+    padding: 5px 8px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 20px;
 }
 
 button:hover {
     opacity: 0.9;
 }
 
+.btn-ver-produtos {
+    padding: 10px 8px;
+    background-color:cornflowerblue
+}
+
+.btn-ver-pagamentos {
+    padding: 10px 8px;
+    background-color:goldenrod;
+}
+
+.btn-editar {
+    padding: 10px 8px;
+    background-color: blue;
+    margin-right: 15px;
+}
+
+.btn-excluir {
+    padding: 10px 8px;
+    background-color: red;
+}

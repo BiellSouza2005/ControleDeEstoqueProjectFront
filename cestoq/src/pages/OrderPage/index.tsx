@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import BarraDePesquisa from '../../componentes/BarraDePesquisa';
 import Botao from '../../componentes/Botao';
 import ConfirmacaoModal from '../../componentes/ConfirmacaoModal';
+import TableProductModal from '../../componentes/TableProductModal';
 import axios from 'axios';
 import './OrderPage.css';
-import EditProductModal from '../../componentes/EditProductModal';
 import FormularioOrder from '../../componentes/FormularioOrder';
-
+import FormularioEditOrder from '../../componentes/FormularioEditOrder';
+import TablePaymentModal from '../../componentes/TablePaymentModal';
 
 interface Order {
     orderId: number;
@@ -46,19 +47,26 @@ const OrderPage = () => {
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
     const [acaoConfirmacao, setAcaoConfirmacao] = useState<() => void>(() => {});
     const [mensagemModal, setMensagemModal] = useState<string>('');
-    const [editProduct, setEditProduct] = useState<Product | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
-    
+
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [editOrder, setEditOrder] = useState<Order | null>(null);
+    const [modalProducts, setModalProducts] = useState<Product[]>([]);
+    const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+    const [modalPayments, setModalPayments] = useState<{ amount: number; paymentDate: string; }[]>([]);
+    const [isPaymentModalOpen, SetIsPaymentModalOpen] = useState(false);
 
     useEffect(() => {
         const carregarDados = async () => {
             try {
-                const [produtosRes, clientsRes] = await Promise.all([
+                const [produtosRes, clientsRes, orderRes] = await Promise.all([                    
                     axios.get('http://localhost:5124/api/Products/VerTodosProdutos'),
                     axios.get('http://localhost:5124/api/Clients/VerTodosOsClientes'),
+                    axios.get('http://localhost:5124/api/Order/VerPedidos')
                 ]);
 
+                setOrders(orderRes.data);
                 setProducts(produtosRes.data);
                 setClients(clientsRes.data);
             } catch (error) {
@@ -70,10 +78,10 @@ const OrderPage = () => {
     }, []);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getEntityNameById = (id: number, entities: Array<{ [key: string]: any }>, key: string): string => {
-        const entity = entities.find(e => e[key] === id);
-        return entity ? entity.name : 'Desconhecido';
-    };
+    // const getEntityNameById = (id: number, entities: Array<{ [key: string]: any }>, key: string): string => {
+    //     const entity = entities.find(e => e[key] === id);
+    //     return entity ? entity.name : 'Desconhecido';
+    // };
 
     const handleOrderCadastrado = (order: Partial<Order>) => {
         setMensagemModal('Você deseja adicionar este pedido?');
@@ -102,29 +110,29 @@ const OrderPage = () => {
         });
         setMostrarModal(true);
     };
-    const handleDeleteProduto = (id: number) => {
-        setMensagemModal('Você deseja realmente excluir este produto?');
+    const handleDeleteOrder = (id: number) => {
+        setMensagemModal('Você deseja realmente excluir este pedido?');
         setAcaoConfirmacao(() => async () => {
             try {
                 const username = sessionStorage.getItem('username');
-                await axios.delete(`http://localhost:5124/api/Products/DesativarProduto/${id}`, {
+                await axios.delete(`http://localhost:5124/api/Order/DesativarPedido/${id}`, {
                     headers: { 'User-Inclusion': username },
                 });
-                setProducts(prev => prev.filter(product => product.productId !== id));
+                setOrders(prev => prev.filter(order => order.orderId !== id));
                 setMostrarModal(false);
             } catch (error) {
-                console.error('Erro ao excluir produto:', error);
+                console.error('Erro ao excluir pedido:', error);
             }
         });
         setMostrarModal(true);
     };
 
-    const handleEditProduto = async (updatedProduct: Product) => {
+    const handleEditOrder = async (updatedOrder: Order) => {
         try {
             const username = sessionStorage.getItem('username');
             const response = await axios.put(
-                `http://localhost:5124/api/Products/AlterarProduto/${updatedProduct.productId}`,
-                updatedProduct,
+                `http://localhost:5124/api/Order/AtualizarPedido/${updatedOrder.orderId}`,
+                updatedOrder,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -134,25 +142,61 @@ const OrderPage = () => {
             );
 
             if (response.status === 200) {
-                setProducts(prev => prev.map(product =>
-                    product.productId === updatedProduct.productId ? updatedProduct : product
+                setOrders(prev => prev.map(order =>
+                    order.orderId === updatedOrder.orderId ? updatedOrder : order
                 ));
+                
             }
-            setEditProduct(null);
+            setEditOrder(null);
+
         } catch (error) {
-            console.error('Erro ao editar produto:', error);
+            console.error('Erro ao editar pedido:', error);
         }
     };
 
-    const clientFiltrados = clients.filter(client =>
-        client.name?.toLowerCase().includes(query.toLowerCase())
+    const openProductModal = (orderId: number) => {
+        const order = orders.find(o => o.orderId === orderId);
+        if (order) {
+            const productsInOrder = order.orderItems.map(item => {
+                const product = products.find(p => p.productId === item.productId);
+                return {
+                    ...product,
+                    quantity: item.quantity,
+                };
+            });
+            setModalProducts(productsInOrder as Product[]);
+            setIsProductModalOpen(true);
+        }
+    };
+
+    const openPaymentModal = (orderId: number) => {
+        const order = orders.find(o => o.orderId === orderId);
+        if (order) {
+            setModalPayments(order.orderPayments);
+            SetIsPaymentModalOpen(true);
+        }
+    };
+
+    const closeProductModal = () => {
+        setIsProductModalOpen(false);
+        setModalProducts([]);
+    };
+
+
+    const closePaymentModal = () => {
+        SetIsPaymentModalOpen(false);
+        setModalPayments([]);
+    };
+
+    const orderFiltrados = orders.filter(order =>
+        order.orderId?.toString().includes(query)
     );
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const clientsPaginados = clientFiltrados.slice(indexOfFirstItem, indexOfLastItem);
+    const orderPaginados = orderFiltrados.slice(indexOfFirstItem, indexOfLastItem);
 
-    const totalPages = Math.ceil(clientFiltrados.length / itemsPerPage);
+    const totalPages = Math.ceil(orderFiltrados.length / itemsPerPage);
 
     const handlePageChange = (pageNumber: number) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
@@ -180,7 +224,7 @@ const OrderPage = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Pedido</th>
+                            <th>N° Pedido</th>
                             <th>Cliente</th>
                             <th>Data do Pedido</th>
                             <th>Produtos do pedido</th>
@@ -189,20 +233,31 @@ const OrderPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {clientsPaginados.map(client => (
-                            <tr key={client.clientId}>
-                                <td>{client.name}</td>
-                                <td>{getEntityNameById(client.clientId, products, 'productId')}</td>
-                                <td>R${client.clientId.toFixed(2)}</td>
-                                <td>{getEntityNameById(client.clientId, products, 'brandId')}</td>
+                        {orderPaginados.map(order => (
+                            <tr key={order.orderId}>
+                                <td>{order.orderId}</td>
+                                <td>{clients.find(c => c.clientId === order.clientId)?.name || 'Desconhecido'}</td>
+                                <td>{order.orderDate.split('T')[0]}</td>
+                                <td>
+                                    <Botao className='btn-ver-produtos' onClick={() => openProductModal(order.orderId)}>
+                                        Ver Produtos
+                                    </Botao>
+                                </td>
+                                <td>
+                                    <Botao className='btn-ver-pagamentos' onClick={() => openPaymentModal(order.orderId)}>
+                                        Ver Pagamentos
+                                    </Botao>
+                                </td>
                                 <td>
                                     <Botao
-                                        onClick={() => setEditProduct(client as unknown as Product)}
+                                        onClick={() => setEditOrder(order)}
+                                        className='btn-editar'
                                     >
                                         Editar
                                     </Botao>
                                     <Botao
-                                        onClick={() => handleDeleteProduto(client.clientId)}
+                                        onClick={() => handleDeleteOrder(order.orderId)}
+                                        className='btn-excluir'
                                     >
                                         Excluir
                                     </Botao>
@@ -242,13 +297,30 @@ const OrderPage = () => {
                     onCancelar={() => setMostrarModal(false)}
                 />
             )}
-            {editProduct && (
-                <EditProductModal
-                    product={editProduct}
-                    onSave={handleEditProduto}
-                    onClose={() => setEditProduct(null)}
+            {editOrder && (
+                <FormularioEditOrder
+                order={editOrder}
+                products={products}
+                clients={clients}
+                onSubmit={handleEditOrder}
+                onCancel={() => setEditOrder(null)}
                 />
             )}
+            {isProductModalOpen && (
+                <TableProductModal
+                    isOpen={isProductModalOpen}
+                    onClose={closeProductModal}
+                    products={modalProducts}
+                />
+            )}
+            {isPaymentModalOpen && (
+                <TablePaymentModal
+                    isOpen={isPaymentModalOpen}
+                    onClose={closePaymentModal}
+                    payments={modalPayments}
+                />
+            )}
+            
 
         </section>
     );
