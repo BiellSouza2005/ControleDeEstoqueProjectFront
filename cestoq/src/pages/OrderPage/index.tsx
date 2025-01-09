@@ -77,11 +77,6 @@ const OrderPage = () => {
         carregarDados();
     }, []);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // const getEntityNameById = (id: number, entities: Array<{ [key: string]: any }>, key: string): string => {
-    //     const entity = entities.find(e => e[key] === id);
-    //     return entity ? entity.name : 'Desconhecido';
-    // };
 
     const handleOrderCadastrado = (order: Partial<Order>) => {
         setMensagemModal('Você deseja adicionar este pedido?');
